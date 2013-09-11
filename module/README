@@ -1,5 +1,8 @@
-play2-auth-fb
-=============
+This is your new Play 2.1 application
+=====================================
+
+This file will be packaged with your application, when using `play dist`.
+
 How to use this module
 1, run: play publish-local => to public this module to local
 
@@ -16,4 +19,4 @@ facebook.callbackURL="http://localhost:9000/callback"
 
 6, implement a callback function to handle callbackURL, facebook will return a code, call getFbUser(code) to get com.restfb.types.User info
 
-7, Do your business with this user info
+7. Do your business with this user info
