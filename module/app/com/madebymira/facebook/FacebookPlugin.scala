@@ -15,11 +15,12 @@ class FacebookPlugin(application: Application) extends Plugin {
     val FACEBOOK_ID: String = "facebook.id";
     val FACEBOOK_SECRET: String = "facebook.secret";
     val FACEBOOK_CALLBACK_URL: String = "facebook.callbackURL"
+    val FACEBOOK_SCOPE: String = "facebook.scope"
 
     lazy val id: String = application.configuration.getString(FACEBOOK_ID).getOrElse(null);
     lazy val secret: String = application.configuration.getString(FACEBOOK_SECRET).getOrElse(null);
     lazy val callbackURL: String = application.configuration.getString(FACEBOOK_CALLBACK_URL).getOrElse(null);
-
+    lazy val scope: String = application.configuration.getString(FACEBOOK_SCOPE).getOrElse(null);
     /* (non-Javadoc)
      * @see play.api.Plugin#onStart()
      */
@@ -38,13 +39,8 @@ class FacebookPlugin(application: Application) extends Plugin {
      * @param scope the scope
      * @return the login url
      */
-    def getLoginUrl(scope: String): String = {
-        if ((scope != null) && (!scope.isEmpty())) {
-            return String.format("https://graph.facebook.com/oauth/authorize?scope=%s&client_id=%s&redirect_uri=%s", scope, id, callbackURL);
-        } else {
-            Logger.info("get Login id:" + id)
-            return String.format("https://graph.facebook.com/oauth/authorize?scope=email,user_location,publish_stream,offline_access,create_event&client_id=%s&redirect_uri=%s", id, callbackURL);
-        }
+    def getLoginUrl: String = {
+        return String.format("https://graph.facebook.com/oauth/authorize?scope=%s&client_id=%s&redirect_uri=%s", scope, id, callbackURL);
     }
 
     /**
