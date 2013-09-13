@@ -29,7 +29,6 @@ class FacebookPlugin(application: Application) extends Plugin {
         //id
         //secret
         //callbackURL
-        Logger.info("onStart id:" + id)
         Logger.info("FacebookPlugin has started");
     }
 
