@@ -7,31 +7,10 @@ import com.restfb.DefaultFacebookClient
 import com.restfb.types._
 import scala.concurrent._
 import scala.concurrent.duration._
+import play.api.mvc._
 
-/**
- * The Class FacebookPlugin.
- */
-class FacebookPlugin(application: Application) extends Plugin {
-    val FACEBOOK_ID: String = "facebook.id";
-    val FACEBOOK_SECRET: String = "facebook.secret";
-    val FACEBOOK_CALLBACK_URL: String = "facebook.callbackURL"
-    val FACEBOOK_SCOPE: String = "facebook.scope"
-
-    lazy val id: String = application.configuration.getString(FACEBOOK_ID).getOrElse(null);
-    lazy val secret: String = application.configuration.getString(FACEBOOK_SECRET).getOrElse(null);
-    lazy val callbackURL: String = application.configuration.getString(FACEBOOK_CALLBACK_URL).getOrElse(null);
-    lazy val scope: String = application.configuration.getString(FACEBOOK_SCOPE).getOrElse(null);
-    /* (non-Javadoc)
-     * @see play.api.Plugin#onStart()
-     */
-    override def onStart() {
-        val configuration = application.configuration;
-        // you can now access the application.conf settings, including any custom ones you have added
-        //id
-        //secret
-        //callbackURL
-        Logger.info("FacebookPlugin has started");
-    }
+trait FacebookConnect {
+    self: FacebookConfig with Controller =>   
 
     /**
      * Gets the login url.
