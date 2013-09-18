@@ -10,54 +10,62 @@ import scala.concurrent.duration._
 import play.api.mvc._
 
 trait FacebookConnect {
-    self: FacebookConfig with Controller =>   
+    self: FacebookConfig =>
 
     /**
-     * Gets the login url.
+     * Gets the authorize url.
      *
-     * @param scope the scope
-     * @return the login url
+     * @return the authorize url
      */
-    def getLoginUrl: String = {
-        return String.format("https://graph.facebook.com/oauth/authorize?scope=%s&client_id=%s&redirect_uri=%s", scope, id, callbackURL);
+    def getFbAuthorizeUrl: String = {
+        return String.format("https://graph.facebook.com/oauth/authorize?scope=%s&client_id=%s&redirect_uri=%s", fbScope, fbId, fbCallbackURL);
     }
 
     /**
-     * Gets the auth url.
+     * Gets the access token url.
      *
      * @param authCode the auth code
-     * @return the auth url
+     * @return the access token url
      */
-    def getAuthUrl(authCode: String): String = {
+    def getFbAccessTokenUrl(authCode: String): String = {
         if (authCode == null || authCode.isEmpty()) return null;
-        else return String.format("https://graph.facebook.com/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s", id, callbackURL, secret, authCode);
+        else return String.format("https://graph.facebook.com/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s", fbId, fbCallbackURL, fbSecret, authCode);
     }
 
     /**
-     * Gets the fb user.
+     * Gets the access token.
      *
-     * @param code the code
-     * @return the fb user
+     * @param authCode the auth code
+     * @return the access token
      */
-    def getFbUser(code: String): User = {
+    def getFbAccessToken(authCode: String): String = {
         import scala.util.matching.Regex
 
-        Logger.info(getAuthUrl(code))
         val duration = Duration(10, SECONDS)
-        val future: Future[play.api.libs.ws.Response] = WS.url(getAuthUrl(code)).get()
+        val future: Future[play.api.libs.ws.Response] = WS.url(getFbAccessTokenUrl(authCode)).get()
         val response = Await.result(future, duration)
         val accessTokenBody = response.body
 
         val regex = new Regex("access_token=(.*)&expires=(.*)")
         accessTokenBody match {
             case regex(accessToken, expires) => {
-                val facebookClient = new DefaultFacebookClient(accessToken)
-                val fbUser = facebookClient.fetchObject("me", classOf[com.restfb.types.User])
-                return fbUser
+                return accessToken
             }
             case _ => {
                 return null
             }
         }
+    }
+
+    /**
+     * Gets the fb user.
+     *
+     * @param accessToken the access token
+     * @return the fb user
+     */
+    def getFbUser(accessToken: String): User = {
+        val facebookClient = new DefaultFacebookClient(accessToken)
+        val fbUser = facebookClient.fetchObject("me", classOf[com.restfb.types.User])
+        return fbUser
     }
 }
