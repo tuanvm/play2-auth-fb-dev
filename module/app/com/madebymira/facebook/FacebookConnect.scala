@@ -13,19 +13,19 @@ trait FacebookConnect {
     self: FacebookConfig =>
 
     /**
-     * Gets the authorize url.
+     * Gets the fb authorize url.
      *
-     * @return the authorize url
+     * @return the fb authorize url
      */
     def getFbAuthorizeUrl: String = {
         return String.format("https://graph.facebook.com/oauth/authorize?scope=%s&client_id=%s&redirect_uri=%s", fbScope, fbId, fbCallbackURL);
     }
 
     /**
-     * Gets the access token url.
+     * Gets the fb access token url.
      *
      * @param authCode the auth code
-     * @return the access token url
+     * @return the fb access token url
      */
     def getFbAccessTokenUrl(authCode: String): String = {
         if (authCode == null || authCode.isEmpty()) return null;
@@ -33,10 +33,10 @@ trait FacebookConnect {
     }
 
     /**
-     * Gets the access token.
+     * Gets the fb access token.
      *
      * @param authCode the auth code
-     * @return the access token
+     * @return the fb access token
      */
     def getFbAccessToken(authCode: String): String = {
         import scala.util.matching.Regex
